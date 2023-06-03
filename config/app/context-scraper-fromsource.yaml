@@ -62,9 +62,6 @@ objects:
           app: ${APPLICATION_NAME}
           application: ${APPLICATION_NAME}
           deploymentconfig: ${APPLICATION_NAME}
-          version: ${APP_VERSION_TAG}
-        annotations:
-          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - env:
