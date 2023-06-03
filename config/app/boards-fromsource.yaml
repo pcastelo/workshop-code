@@ -229,8 +229,8 @@ objects:
   spec:
     replicas: 1
     selector:
-	  app: boards-mongodb
-	  name: boards-mongodb	  
+	  app: ${DATABASE_SERVICE_NAME}
+	  name: ${DATABASE_SERVICE_NAME} 
     strategy:
       type: Recreate
     template:
