@@ -216,21 +216,6 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    application: ${APPLICATION_NAME}
-    name: ${DATABASE_SERVICE_NAME}
-    labels:
-      application: ${APPLICATION_NAME}
-      app: ${APPLICATION_NAME}
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: ${MONGODB_VOLUME_CAPACITY}
-- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
@@ -280,7 +265,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: ${DATABASE_SERVICE_NAME}
-          image: ' '
+          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c24'
           imagePullPolicy: IfNotPresent
           livenessProbe:
             initialDelaySeconds: 30
@@ -308,27 +293,8 @@ objects:
             capabilities: {}
             privileged: false
           terminationMessagePath: /dev/termination-log
-          volumeMounts:
-          - mountPath: /var/lib/mongodb/data
-            name: ${DATABASE_SERVICE_NAME}-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
-        volumes:
-        - name: ${DATABASE_SERVICE_NAME}-data
-          persistentVolumeClaim:
-            claimName: ${DATABASE_SERVICE_NAME}
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - mongodb
-        from:
-          kind: ImageStreamTag
-          name: mongodb:${MONGODB_VERSION}
-          namespace: ${MONGODB_NAMESPACE}
-        lastTriggeredImage: ""
-      type: ImageChange
-    - type: ConfigChange
 # -----------------------------------------------------------------------------
 # Parameters Section
 # -----------------------------------------------------------------------------
