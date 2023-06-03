@@ -69,6 +69,7 @@ objects:
           deploymentconfig: ${APPLICATION_NAME}
           version: ${APP_VERSION_TAG}
         annotations:
+          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - capabilities: {}
@@ -222,6 +223,8 @@ objects:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
       version: ${MONGODB_VERSION}
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
     name: ${DATABASE_SERVICE_NAME}
   spec:
     replicas: 1
@@ -237,6 +240,8 @@ objects:
           deploymentConfig: ${DATABASE_SERVICE_NAME}
           name: ${DATABASE_SERVICE_NAME}
           version: ${MONGODB_VERSION}
+        annotations:
+          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - capabilities: {}
@@ -261,7 +266,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: ${DATABASE_SERVICE_NAME}
-          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c24'          
+          image: ' '
           imagePullPolicy: IfNotPresent
           livenessProbe:
             initialDelaySeconds: 30
@@ -289,8 +294,27 @@ objects:
             capabilities: {}
             privileged: false
           terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /var/lib/mongodb/data
+            name: ${DATABASE_SERVICE_NAME}-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
+        volumes:
+        - name: ${DATABASE_SERVICE_NAME}-data
+          persistentVolumeClaim:
+            claimName: ${DATABASE_SERVICE_NAME}
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - mongodb
+        from:
+          kind: ImageStreamTag
+          name: mongodb:${MONGODB_VERSION}
+          namespace: ${MONGODB_NAMESPACE}
+        lastTriggeredImage: ""
+      type: ImageChange
+    - type: ConfigChange
 # -----------------------------------------------------------------------------
 # Parameters Section
 # -----------------------------------------------------------------------------
@@ -325,8 +349,7 @@ parameters:
   name: MONGODB_MEMORY_LIMIT
   required: true
   value: 512Mi
-- description: The OpenShift Namespace where the MongoDB ImageStream re
-s.
+- description: The OpenShift Namespace where the MongoDB ImageStream resides.
   displayName: MongoDB Namespace
   name: MONGODB_NAMESPACE
   value: openshift
