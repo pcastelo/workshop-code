@@ -229,8 +229,8 @@ objects:
   spec:
     replicas: 1
     selector:
-	  app: ${DATABASE_SERVICE_NAME}
-	  name: ${DATABASE_SERVICE_NAME} 
+      app: ${DATABASE_SERVICE_NAME}
+      name: ${DATABASE_SERVICE_NAME} 
     strategy:
       type: Recreate
     template:
