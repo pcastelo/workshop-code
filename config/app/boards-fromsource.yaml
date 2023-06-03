@@ -262,7 +262,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: ${DATABASE_SERVICE_NAME}
-          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c2'
+          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c24'
           livenessProbe:
             initialDelaySeconds: 30
             tcpSocket:
