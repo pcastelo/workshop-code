@@ -69,7 +69,6 @@ objects:
           deploymentconfig: ${APPLICATION_NAME}
           version: ${APP_VERSION_TAG}
         annotations:
-          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - capabilities: {}
@@ -216,14 +215,13 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
       application: ${APPLICATION_NAME}
       app: ${APPLICATION_NAME}
       version: ${MONGODB_VERSION}
-    annotations:
-      template.alpha.openshift.io/wait-for-ready: "true"
     name: ${DATABASE_SERVICE_NAME}
   spec:
     replicas: 1
@@ -239,8 +237,6 @@ objects:
           deploymentConfig: ${DATABASE_SERVICE_NAME}
           name: ${DATABASE_SERVICE_NAME}
           version: ${MONGODB_VERSION}
-        annotations:
-          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - capabilities: {}
@@ -265,7 +261,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: ${DATABASE_SERVICE_NAME}
-          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c24'
+          image: 'registry.redhat.io/rhscl/mongodb-36-rhel7@sha256:ffc67a5d76944cbb073862a61b9928400bb948ca0cb220d6718116b9f5637c24'          
           imagePullPolicy: IfNotPresent
           livenessProbe:
             initialDelaySeconds: 30
@@ -329,7 +325,8 @@ parameters:
   name: MONGODB_MEMORY_LIMIT
   required: true
   value: 512Mi
-- description: The OpenShift Namespace where the MongoDB ImageStream resides.
+- description: The OpenShift Namespace where the MongoDB ImageStream re
+s.
   displayName: MongoDB Namespace
   name: MONGODB_NAMESPACE
   value: openshift
