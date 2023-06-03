@@ -229,7 +229,8 @@ objects:
   spec:
     replicas: 1
     selector:
-      name: ${DATABASE_SERVICE_NAME}
+	  app: boards-mongodb
+	  name: boards-mongodb	  
     strategy:
       type: Recreate
     template:
@@ -240,8 +241,6 @@ objects:
           deploymentConfig: ${DATABASE_SERVICE_NAME}
           name: ${DATABASE_SERVICE_NAME}
           version: ${MONGODB_VERSION}
-        annotations:
-          sidecar.istio.io/inject: "true"
       spec:
         containers:
         - capabilities: {}
@@ -266,8 +265,7 @@ objects:
               secretKeyRef:
                 key: database-name
                 name: ${DATABASE_SERVICE_NAME}
-          image: ' '
-          imagePullPolicy: IfNotPresent
+          image: 'registry.connect.redhat.com/mongodb/enterprise-database:latest'
           livenessProbe:
             initialDelaySeconds: 30
             tcpSocket:
@@ -294,27 +292,8 @@ objects:
             capabilities: {}
             privileged: false
           terminationMessagePath: /dev/termination-log
-          volumeMounts:
-          - mountPath: /var/lib/mongodb/data
-            name: ${DATABASE_SERVICE_NAME}-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
-        volumes:
-        - name: ${DATABASE_SERVICE_NAME}-data
-          persistentVolumeClaim:
-            claimName: ${DATABASE_SERVICE_NAME}
-    triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - mongodb
-        from:
-          kind: ImageStreamTag
-          name: mongodb:${MONGODB_VERSION}
-          namespace: ${MONGODB_NAMESPACE}
-        lastTriggeredImage: ""
-      type: ImageChange
-    - type: ConfigChange
 # -----------------------------------------------------------------------------
 # Parameters Section
 # -----------------------------------------------------------------------------
