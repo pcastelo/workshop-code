@@ -38,7 +38,6 @@ objects:
   apiVersion: route.openshift.io/v1
   metadata:
     name: app-ui
-    namespace: prueba
     labels:
       app: app-ui
       application: app-ui
@@ -47,7 +46,6 @@ objects:
     annotations:
       openshift.io/host.generated: 'true'
   spec:
-    host: app-ui-prueba.apps.cluster-2c6gn.2c6gn.sandbox171.opentlc.com
     to:
       kind: Service
       name: app-ui
